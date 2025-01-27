@@ -69,7 +69,7 @@ class Product
             echo "Starting web scraping ...\n\n";
             $startTime = microtime(true);
 
-            $page === 0 ? $this->executeScrappingForSinglePage() :
+            $page === 0 ? $this->executeScrappingForSinglePage($document) :
                 $this->executeScrappingForMultiplePage($page);
 
 
@@ -311,12 +311,11 @@ class Product
     /**
      *  This function execute the scrapping for single page.
      * 
+     * @param Crawler $node Document to be processed.
      * @return void
      */
-    function executeScrappingForSinglePage(): void
+    function executeScrappingForSinglePage(Crawler $document): void
     {
-        $document = ScrapeHelper::fetchDocument($this->siteUrl . $this->category);
-
         $this->getAttributes($document);
 
         echo "Page: 1\n";

@@ -69,8 +69,11 @@ class Product
             echo "Starting web scraping ...\n\n";
             $startTime = microtime(true);
 
-            $page === 0 ? $this->executeScrappingForSinglePage($document) :
+            $this->executeScrappingForSinglePage($document);
+
+            if ($page !== 0) {
                 $this->executeScrappingForMultiplePage($page);
+            }
 
 
             $endTime = microtime(true);
@@ -330,7 +333,7 @@ class Product
      */
     function executeScrappingForMultiplePage(int $page): void
     {
-        for ($i = 1; $i <= $page; $i++) {
+        for ($i = 2; $i <= $page; $i++) {
             $document = ScrapeHelper::fetchDocument($this->siteUrl . $this->category . '?page=' . $i);
 
             $this->getAttributes($document);

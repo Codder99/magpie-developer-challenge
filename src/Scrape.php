@@ -10,9 +10,10 @@ class Scrape
 
     public function run(): void
     {
-        $document = ScrapeHelper::fetchDocument('https://www.magpiehq.com/developer-challenge/smartphones');
+        $product = new Product();
+        $this->products = $product->get();
 
-        file_put_contents('output.json', json_encode($this->products));
+        file_put_contents('output.json', json_encode($this->products, JSON_PRETTY_PRINT));
     }
 }
 

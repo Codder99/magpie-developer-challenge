@@ -112,7 +112,7 @@ class Product
                 if (!in_array($productTitle, $this->uniqueProductFound)) {
                     $this->perPageCount = $this->perPageCount + 1;
                     $this->uniqueProductFound[] = $productTitle;
-                    $productData[] =  [
+                    $this->products[] = $productData[] =  [
                         'title' => explode("-", $productTitle)[1],
                         'price' => $this->getPrice($node),
                         'imageUrl' => $this->getImageUrl($node),
@@ -127,7 +127,6 @@ class Product
                     $this->duplicateProductFound = $this->duplicateProductFound + 1;
                 }
             }
-            array_push($this->products, ...$productData);
         });
     }
 

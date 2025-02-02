@@ -71,10 +71,9 @@ class Product
 
             $this->executeScrappingForSinglePage($document);
 
-            if ($page !== 0) {
+            if ($page > 0) {
                 $this->executeScrappingForMultiplePage($page);
             }
-
 
             $endTime = microtime(true);
             $executionTime = $endTime - $startTime;
@@ -104,16 +103,18 @@ class Product
         $crawler->filter('.product')->each(function (Crawler $node) {
             // Get the color variants
             $colors = $this->getColour($node);
+            $title = $this->getTitle($node);
+            $capacity = $this->getCapacity($node);
 
             // Loop through each color and add the product array
             foreach ($colors as $color) {
                 $this->totalCount = $this->totalCount + 1;
-                $productTitle = $color . '-' . $this->getTitle($node) . ' ' . $this->getCapacity($node);
-                if (!in_array($productTitle, $this->uniqueProductFound)) {
+                $productTitle = $color . '-' . $title . ' ' . $capacity;
+                if (!isset($this->uniqueProductFound[$productTitle])) {
                     $this->perPageCount = $this->perPageCount + 1;
-                    $this->uniqueProductFound[] = $productTitle;
+                    $this->uniqueProductFound[$productTitle] = true;
                     $this->products[] =  [
-                        'title' => $this->getTitle($node) . ' ' . $this->getCapacity($node),
+                        'title' => $title . ' ' . $capacity,
                         'price' => $this->getPrice($node),
                         'imageUrl' => $this->getImageUrl($node),
                         'capacityMB' => $this->getCapacityMB($node),
@@ -124,7 +125,7 @@ class Product
                         'shippingDate' => $this->getShippingDate($node)
                     ];
                 } else {
-                    $this->duplicateProductFound = $this->duplicateProductFound + 1;
+                    $this->duplicateProductFound++;
                 }
             }
         });

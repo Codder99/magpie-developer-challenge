@@ -112,8 +112,8 @@ class Product
                 if (!in_array($productTitle, $this->uniqueProductFound)) {
                     $this->perPageCount = $this->perPageCount + 1;
                     $this->uniqueProductFound[] = $productTitle;
-                    $this->products[] = $productData[] =  [
-                        'title' => explode("-", $productTitle)[1],
+                    $this->products[] =  [
+                        'title' => $this->getTitle($node) . ' ' . $this->getCapacity($node),
                         'price' => $this->getPrice($node),
                         'imageUrl' => $this->getImageUrl($node),
                         'capacityMB' => $this->getCapacityMB($node),

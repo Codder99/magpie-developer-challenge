@@ -101,34 +101,54 @@ class Product
         $this->perPageCount = 0;
 
         $crawler->filter('.product')->each(function (Crawler $node) {
-            // Get the color variants
-            $colors = $this->getColour($node);
-            $title = $this->getTitle($node);
-            $capacity = $this->getCapacity($node);
+
+            $getNode = $this->parseNode($node);
 
             // Loop through each color and add the product array
-            foreach ($colors as $color) {
+            foreach ($getNode['colors'] as $color) {
                 $this->totalCount = $this->totalCount + 1;
-                $productTitle = $color . '-' . $title . ' ' . $capacity;
+                $productTitle = $color . '-' . $getNode['title'] . ' ' . $getNode['capacity'];
                 if (!isset($this->uniqueProductFound[$productTitle])) {
                     $this->perPageCount = $this->perPageCount + 1;
                     $this->uniqueProductFound[$productTitle] = true;
                     $this->products[] =  [
-                        'title' => $title . ' ' . $capacity,
-                        'price' => $this->getPrice($node),
-                        'imageUrl' => $this->getImageUrl($node),
-                        'capacityMB' => $this->getCapacityMB($node),
+                        'title' => $getNode['title'] . ' ' . $getNode['capacity'],
+                        'price' => $getNode['price'],
+                        'imageUrl' => $getNode['imageUrl'],
+                        'capacityMB' => $getNode['capacityMB'],
                         'colour' => $color,
-                        'availabilityText' => $this->getAvailabilityText($node),
-                        'isAvailable' => $this->getIsAvailable($node),
-                        'shippingText' => $this->getShippingText($node),
-                        'shippingDate' => $this->getShippingDate($node)
+                        'availabilityText' => $getNode['availabilityText'],
+                        'isAvailable' => $getNode['isAvailable'],
+                        'shippingText' => $getNode['shippingText'],
+                        'shippingDate' => $getNode['shippingDate']
                     ];
                 } else {
                     $this->duplicateProductFound++;
                 }
             }
         });
+    }
+
+    /**
+     * This function returns a product node.
+     * 
+     * @param Crawler $node Document to be processed.
+     * @return Array
+     */
+    function parseNode(Crawler $node): array
+    {
+        return [
+            'colors' => $this->getColour($node),
+            'title' => $this->getTitle($node),
+            'capacity' => $this->getCapacity($node),
+            'price' => $this->getPrice($node),
+            'imageUrl' => $this->getImageUrl($node),
+            'capacityMB' => $this->getCapacityMB($node),
+            'availabilityText' => $this->getAvailabilityText($node),
+            'isAvailable' => $this->getIsAvailable($node),
+            'shippingText' => $this->getShippingText($node),
+            'shippingDate' => $this->getShippingDate($node)
+        ];
     }
 
     /**
